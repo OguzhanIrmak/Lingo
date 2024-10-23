@@ -1,0 +1,48 @@
+﻿<Window x:Class="Lingo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lingo Game" Height="513" Width="598">
+    <Canvas x:Name="MyCanvas" Background="DarkBlue" Margin="1">
+
+        <!-- Tahmin Girişi -->
+        <TextBox x:Name="GuessTextBox" Width="250" Height="30" Background="White" 
+                 Canvas.Left="125" Canvas.Top="30"/>
+        <Button Content="Tahmin Yap" Width="100" Height="30" Canvas.Left="400" 
+                Canvas.Top="30" Click="GuessButton_Click"/>
+
+        <!-- 1. Tahmin -->
+        <Rectangle x:Name="Row1_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="100"/>
+        <Rectangle x:Name="Row1_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="100"/>
+        <Rectangle x:Name="Row1_Letter3" Width="20" Height="20" Fill="White" Canvas.Left="240" Canvas.Top="100"/>
+        <Rectangle x:Name="Row1_Letter4" Width="20" Height="20" Fill="White" Canvas.Left="280" Canvas.Top="100"/>
+        <Rectangle x:Name="Row1_Letter5" Width="20" Height="20" Fill="White" Canvas.Left="320" Canvas.Top="100"/>
+
+        <!-- 2. Tahmin -->
+        <Rectangle x:Name="Row2_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="150"/>
+        <Rectangle x:Name="Row2_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="150"/>
+        <Rectangle x:Name="Row2_Letter3" Width="20" Height="20" Fill="White" Canvas.Left="240" Canvas.Top="150"/>
+        <Rectangle x:Name="Row2_Letter4" Width="20" Height="20" Fill="White" Canvas.Left="280" Canvas.Top="150"/>
+        <Rectangle x:Name="Row2_Letter5" Width="20" Height="20" Fill="White" Canvas.Left="320" Canvas.Top="150"/>
+
+        <!-- 3. Tahmin -->
+        <Rectangle x:Name="Row3_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="200"/>
+        <Rectangle x:Name="Row3_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="200"/>
+        <Rectangle x:Name="Row3_Letter3" Width="20" Height="20" Fill="White" Canvas.Left="240" Canvas.Top="200"/>
+        <Rectangle x:Name="Row3_Letter4" Width="20" Height="20" Fill="White" Canvas.Left="280" Canvas.Top="200"/>
+        <Rectangle x:Name="Row3_Letter5" Width="20" Height="20" Fill="White" Canvas.Left="320" Canvas.Top="200"/>
+        <!-- 4. Tahmin -->
+        <Rectangle x:Name="Row4_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="250"/>
+        <Rectangle x:Name="Row4_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="250"/>
+        <Rectangle x:Name="Row4_Letter3" Width="20" Height="20" Fill="White" Canvas.Left="240" Canvas.Top="250"/>
+        <Rectangle x:Name="Row4_Letter4" Width="20" Height="20" Fill="White" Canvas.Left="280" Canvas.Top="250"/>
+        <Rectangle x:Name="Row4_Letter5" Width="20" Height="20" Fill="White" Canvas.Left="320" Canvas.Top="250"/>
+
+        <!-- 5. Tahmin -->
+        <Rectangle x:Name="Row5_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="300"/>
+        <Rectangle x:Name="Row5_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="300"/>
+        <Rectangle x:Name="Row5_Letter3" Width="20" Height="20" Fill="White" Canvas.Left="240" Canvas.Top="300"/>
+        <Rectangle x:Name="Row5_Letter4" Width="20" Height="20" Fill="White" Canvas.Left="280" Canvas.Top="300"/>
+        <Rectangle x:Name="Row5_Letter5" Width="20" Height="20" Fill="White" Canvas.Left="320" Canvas.Top="300"/>
+
+    </Canvas>
+</Window>
