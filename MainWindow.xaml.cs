@@ -36,7 +36,7 @@ namespace Lingo
             var random = new System.Random();
             wordToGuess = wordList[random.Next(wordList.Length)];
 
-            // İlk harfi göster
+           
             TextBox guessBox = (TextBox)this.FindName("GuessTextBox");
             if (guessBox != null)
             {
