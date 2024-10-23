@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,7 +23,16 @@ namespace Lingo
 
         private void StartNewGame()
         {
-            string[] wordList = { "APPLE", "brave", "chair", "dream", "eagle" };
+            
+            string filePath = "C:\\Users\\oguzh\\source\\repos\\Lingo\\Kelimeler.txt";
+            string[] wordList = LoadWordsFromFile(filePath);
+
+            if (wordList.Length == 0)
+            {
+                MessageBox.Show("Kelime dosyasından hiç kelime yüklenemedi.");
+                return;
+            }
+
             var random = new System.Random();
             wordToGuess = wordList[random.Next(wordList.Length)];
 
@@ -29,6 +41,24 @@ namespace Lingo
             if (guessBox != null)
             {
                 guessBox.Text = wordToGuess[0].ToString();
+            }
+        }
+
+        private string[] LoadWordsFromFile(string filePath)
+        {
+            
+            try
+            {
+               
+                var words = System.IO.File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
+
+                
+                return words.Where(word => word.Length == 5).Select(word => word.ToUpper()).ToArray();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Kelime dosyası okunurken bir hata oluştu: {ex.Message}");
+                return new string[0]; 
             }
         }
 
