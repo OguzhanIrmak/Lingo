@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Globalization;
+using System.Diagnostics;
 
 namespace Lingo
 {
@@ -14,6 +16,7 @@ namespace Lingo
         private string wordToGuess;
         private int currentRow = 1;
         private int maxAttempts = 5;
+        private CultureInfo turkishCulture = new CultureInfo("tr-TR");
 
         public MainWindow()
         {
@@ -40,7 +43,7 @@ namespace Lingo
             TextBox guessBox = (TextBox)this.FindName("GuessTextBox");
             if (guessBox != null)
             {
-                guessBox.Text = wordToGuess[0].ToString();
+                guessBox.Text = wordToGuess[0].ToString(turkishCulture);
             }
         }
 
@@ -53,7 +56,7 @@ namespace Lingo
                 var words = System.IO.File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
 
                 
-                return words.Where(word => word.Length == 5).Select(word => word.ToUpper()).ToArray();
+                return words.Where(word => word.Length == 5).Select(word => word.ToUpper(turkishCulture)).ToArray();
             }
             catch (Exception ex)
             {
@@ -74,7 +77,7 @@ namespace Lingo
             TextBox guessBox = (TextBox)this.FindName("GuessTextBox");
             if (guessBox != null)
             {
-                string guess = guessBox.Text.ToUpper();
+                string guess = guessBox.Text.ToUpper(turkishCulture);
 
                 if (guess.Length == 5)
                 {
@@ -110,7 +113,7 @@ namespace Lingo
                     };
 
                     Canvas.SetLeft(letterBlock, Canvas.GetLeft(rect) + 5); // Harfi ortalamak için ayarlama
-                    Canvas.SetTop(letterBlock, Canvas.GetTop(rect) + 2);   // Harfi ortalamak için ayarlama
+                    Canvas.SetTop(letterBlock, Canvas.GetTop(rect) -3);   // Harfi ortalamak için ayarlama
                     MyCanvas.Children.Add(letterBlock); // Harfi ekle
 
                     // Renk kontrolü
@@ -119,11 +122,12 @@ namespace Lingo
                         // Doğru harf, doğru yerde
                         rect.Fill = Brushes.Green;
                     }
-                    else if (wordToGuess.Contains(guessedLetter))
+                    else if (wordToGuess.IndexOf(guessedLetter.ToString(turkishCulture), StringComparison.CurrentCulture) >= 0)
                     {
                         // Doğru harf, yanlış yerde
                         rect.Fill = Brushes.Yellow;
                     }
+
                     else
                     {
                         // Yanlış harf
@@ -133,7 +137,7 @@ namespace Lingo
             }
 
             // Eğer tahmin doğruysa oyunu kazandır
-            if (guess == wordToGuess)
+            if (guess.Equals(wordToGuess, StringComparison.CurrentCulture))
             {
                 MessageBox.Show("Tebrikler, doğru kelimeyi buldunuz!");
             }
