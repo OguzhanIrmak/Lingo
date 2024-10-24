@@ -6,9 +6,12 @@
 
         <!-- Tahmin Girişi -->
         <TextBox x:Name="GuessTextBox" Width="250" Height="30" Background="White" 
-                 Canvas.Left="125" Canvas.Top="30"/>
+                 Canvas.Left="125" Canvas.Top="30"
+                 FontSize="24"
+                 TextAlignment="Center"/>
         <Button Content="Tahmin Yap" Width="100" Height="30" Canvas.Left="400" 
                 Canvas.Top="30" Click="GuessButton_Click"/>
+        <Button Content="Yeni Oyun" Width="100" Height="30" Canvas.Left="400" Canvas.Top="110" Click="NewGameButton_Click"/>
         <Label x:Name="FirstLetterLabel" Content="X"
                Foreground="DarkGreen" Background="WhiteSmoke" Width="50" Height="50" Canvas.Left="70" Canvas.Top="20"
                VerticalContentAlignment="Center"

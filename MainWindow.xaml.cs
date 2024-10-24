@@ -112,6 +112,7 @@ namespace Lingo
             if (currentRow > maxAttempts)
             {
                 MessageBox.Show("Tahmin hakkınız bitti!");
+                MessageBox.Show($"Doğru Kelime: {wordToGuess}");
                 return;
             }
 
@@ -119,7 +120,7 @@ namespace Lingo
             if (guessBox != null)
             {
                 string guess = guessBox.Text.ToUpper().Trim();
-                MessageBox.Show($"Tahmin: {guess}, Doğru Kelime: {wordToGuess}");
+               
 
                 if (guess.Length == 5)
                 {
@@ -205,6 +206,35 @@ namespace Lingo
                     {
                         // Yanlış harf
                         rect.Fill = Brushes.Gray;
+                    }
+                }
+            }
+        }
+
+        private void NewGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartNewGame();
+            currentRow = 1;
+            ClearCanvas();
+        }
+        private void ClearCanvas()
+        {
+            // Canvas'taki tüm harfleri ve renkleri sıfırlamak için
+            for (int row = 1; row <= maxAttempts; row++)
+            {
+                for (int col = 1; col <= 5; col++)
+                {
+                    // Her bir kutuyu bul ve rengini temizle
+                    Rectangle rect = (Rectangle)this.FindName($"Row{row}_Letter{col}");
+                    if (rect != null)
+                    {
+                        rect.Fill = Brushes.White; // Kutu rengini beyaza çevir
+                    }
+
+                    // Önceki harfleri Canvas'tan temizlemek için
+                    foreach (var child in MyCanvas.Children.OfType<TextBlock>().ToList())
+                    {
+                        MyCanvas.Children.Remove(child);
                     }
                 }
             }
