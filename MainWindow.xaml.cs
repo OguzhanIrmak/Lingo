@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Globalization;
-using System.Diagnostics;
 
 namespace Lingo
 {
@@ -16,7 +14,7 @@ namespace Lingo
         private string wordToGuess;
         private int currentRow = 1;
         private int maxAttempts = 5;
-        private CultureInfo turkishCulture = new CultureInfo("tr-TR");
+        private static Random random;
 
         public MainWindow()
         {
@@ -26,44 +24,87 @@ namespace Lingo
 
         private void StartNewGame()
         {
-            
+            //Kelime dosyasının yolu
             string filePath = "C:\\Users\\oguzh\\source\\repos\\Lingo\\Kelimeler.txt";
-            string[] wordList = LoadWordsFromFile(filePath);
 
-            if (wordList.Length == 0)
+            // Dosyadaki toplam satır sayısını dinamik olarak bulma 
+            // 5 harfli yeni kelimeler direk eklenebilir
+            int totalLines = GetTotalLineCount(filePath);
+
+            if (totalLines == 0)
             {
                 MessageBox.Show("Kelime dosyasından hiç kelime yüklenemedi.");
                 return;
             }
 
-            var random = new System.Random();
-            wordToGuess = wordList[random.Next(wordList.Length)];
+            // Daha karmaşık rastgelelik ile satır seçimi
+            int selectedLine = GetRandomLine(totalLines);
 
-           
-            TextBox guessBox = (TextBox)this.FindName("GuessTextBox");
-            if (guessBox != null)
+            // Seçilen satırdaki kelimeyi al
+            wordToGuess = GetWordFromLine(filePath, selectedLine).Trim();
+
+            if (string.IsNullOrEmpty(wordToGuess))
             {
-                guessBox.Text = wordToGuess[0].ToString(turkishCulture);
+                MessageBox.Show("Bir hata oluştu, kelime seçilemedi.");
+                return;
+            }
+
+            // İlk harfi tahmin kutusuna yerleştirme
+            Label firstLetterLabel = (Label)this.FindName("FirstLetterLabel");
+            if (firstLetterLabel != null)
+            {
+                firstLetterLabel.Content = wordToGuess[0].ToString();
             }
         }
-
-        private string[] LoadWordsFromFile(string filePath)
+        #region Rastgelelik ile ilgili metotlar
+        // Toplam satır sayısını  hesaplayan fonksiyon
+        private int GetTotalLineCount(string filePath)
         {
-            
             try
             {
-               
-                var words = System.IO.File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
 
-                
-                return words.Where(word => word.Length == 5).Select(word => word.ToUpper(turkishCulture)).ToArray();
+                return File.ReadAllLines(filePath, System.Text.Encoding.UTF8).Length;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Kelime dosyası okunurken bir hata oluştu: {ex.Message}");
-                return new string[0]; 
+                MessageBox.Show($"Dosya okunurken bir hata oluştu: {ex.Message}");
+                return 0;
             }
         }
+
+        // Rastgele satır numarası seçen fonksiyon
+        private int GetRandomLine(int totalLines)
+        {
+
+            int seed = Guid.NewGuid().GetHashCode() ^ DateTime.Now.Millisecond;
+            var random = new Random(seed);
+
+
+            return random.Next(0, totalLines);
+        }
+
+        // Seçilen satırdaki kelimeyi okuyan fonksiyon
+        private string GetWordFromLine(string filePath, int lineNumber)
+        {
+            try
+            {
+                using (var sr = new StreamReader(filePath, System.Text.Encoding.UTF8))
+                {
+                    for (int i = 0; i < lineNumber; i++)
+                    {
+                        sr.ReadLine();
+                    }
+                    string selectedWord = sr.ReadLine();
+                    return selectedWord?.ToUpper();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Dosyadan kelime okuma hatası: {ex.Message}");
+                return null;
+            }
+        }
+        #endregion
 
         // Tahmin Yapma
         private void GuessButton_Click(object sender, RoutedEventArgs e)
@@ -77,12 +118,45 @@ namespace Lingo
             TextBox guessBox = (TextBox)this.FindName("GuessTextBox");
             if (guessBox != null)
             {
-                string guess = guessBox.Text.ToUpper(turkishCulture);
+                string guess = guessBox.Text.ToUpper().Trim();
+                MessageBox.Show($"Tahmin: {guess}, Doğru Kelime: {wordToGuess}");
 
                 if (guess.Length == 5)
                 {
-                    CheckGuess(guess);
-                    currentRow++;
+                    // Doğru tahmin kontrolü
+                    if (guess.Equals(wordToGuess, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Tüm kutuları yeşil renkte göster ve harfleri yerleştir
+                        for (int i = 0; i < 5; i++)
+                        {
+                            Rectangle rect = (Rectangle)this.FindName($"Row{currentRow}_Letter{i + 1}");
+                            if (rect != null)
+                            {
+                                rect.Fill = Brushes.Green;
+
+
+                                TextBlock letterBlock = new TextBlock
+                                {
+                                    Text = guess[i].ToString(),
+                                    FontSize = 18,
+                                    Foreground = Brushes.Black,
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center
+                                };
+
+                                Canvas.SetLeft(letterBlock, Canvas.GetLeft(rect) + 5);
+                                Canvas.SetTop(letterBlock, Canvas.GetTop(rect) - 3);
+                                MyCanvas.Children.Add(letterBlock);
+                            }
+                        }
+
+                        MessageBox.Show("Tebrikler, doğru kelimeyi buldunuz!");
+                        return;
+                    }
+
+                    CheckGuess(guess); // Tahmin kontrolü metodu
+                    currentRow++; // Yeni tahmin satırına geçiş
+                    guessBox.Clear(); // Tahmin kutusunu temizle
                 }
                 else
                 {
@@ -91,9 +165,10 @@ namespace Lingo
             }
         }
 
+
         private void CheckGuess(string guess)
         {
-            // Her harfi kontrol et ve doğru konumda ise rengi değiştir ve harfi göster
+            // HARF KONTROLÜ VE RENK AYARI
             for (int i = 0; i < 5; i++)
             {
                 char guessedLetter = guess[i];
@@ -102,7 +177,7 @@ namespace Lingo
 
                 if (rect != null)
                 {
-                    // Harf kutusu içinde gösterilecek
+                    // HARF KUTUSU İÇİNDE OLACAK
                     TextBlock letterBlock = new TextBlock
                     {
                         Text = guessedLetter.ToString(),
@@ -112,22 +187,20 @@ namespace Lingo
                         VerticalAlignment = VerticalAlignment.Center
                     };
 
-                    Canvas.SetLeft(letterBlock, Canvas.GetLeft(rect) + 5); // Harfi ortalamak için ayarlama
-                    Canvas.SetTop(letterBlock, Canvas.GetTop(rect) -3);   // Harfi ortalamak için ayarlama
-                    MyCanvas.Children.Add(letterBlock); // Harfi ekle
+                    Canvas.SetLeft(letterBlock, Canvas.GetLeft(rect) + 5);
+                    Canvas.SetTop(letterBlock, Canvas.GetTop(rect) - 3);
+                    MyCanvas.Children.Add(letterBlock);
 
-                    // Renk kontrolü
                     if (guessedLetter == actualLetter)
                     {
                         // Doğru harf, doğru yerde
                         rect.Fill = Brushes.Green;
                     }
-                    else if (wordToGuess.IndexOf(guessedLetter.ToString(turkishCulture), StringComparison.CurrentCulture) >= 0)
+                    else if (wordToGuess.Contains(guessedLetter))
                     {
                         // Doğru harf, yanlış yerde
                         rect.Fill = Brushes.Yellow;
                     }
-
                     else
                     {
                         // Yanlış harf
@@ -135,12 +208,7 @@ namespace Lingo
                     }
                 }
             }
-
-            // Eğer tahmin doğruysa oyunu kazandır
-            if (guess.Equals(wordToGuess, StringComparison.CurrentCulture))
-            {
-                MessageBox.Show("Tebrikler, doğru kelimeyi buldunuz!");
-            }
         }
     }
 }
+

@@ -9,8 +9,16 @@
                  Canvas.Left="125" Canvas.Top="30"/>
         <Button Content="Tahmin Yap" Width="100" Height="30" Canvas.Left="400" 
                 Canvas.Top="30" Click="GuessButton_Click"/>
+        <Label x:Name="FirstLetterLabel" Content="X"
+               Foreground="DarkGreen" Background="WhiteSmoke" Width="50" Height="50" Canvas.Left="70" Canvas.Top="20"
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center"
+               FontSize="30"
+               FontWeight="Bold">
 
-        
+        </Label>
+
+
         <!-- 1. Tahmin -->
         <Rectangle x:Name="Row1_Letter1" Width="20" Height="20" Fill="White" Canvas.Left="160" Canvas.Top="100"/>
         <Rectangle x:Name="Row1_Letter2" Width="20" Height="20" Fill="White" Canvas.Left="200" Canvas.Top="100"/>
