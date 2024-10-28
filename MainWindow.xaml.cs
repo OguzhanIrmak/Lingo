@@ -107,7 +107,7 @@ namespace Lingo
         #endregion
 
         // Tahmin Yapma
-        private void GuessButton_Click(object sender, RoutedEventArgs e)
+        private void Guess(object sender, RoutedEventArgs e)
         {
             if (currentRow > maxAttempts)
             {
@@ -216,6 +216,8 @@ namespace Lingo
             StartNewGame();
             currentRow = 1;
             ClearCanvas();
+
+            GuessTextBox.Text = string.Empty;
         }
         private void ClearCanvas()
         {
@@ -237,6 +239,14 @@ namespace Lingo
                         MyCanvas.Children.Remove(child);
                     }
                 }
+            }
+        }
+
+        private void GuessTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                Guess(sender, e);
             }
         }
     }
